@@ -111,10 +111,7 @@ export async function chatglmAuth(
   console.log("[Auth] got chatglmAuth token: ", authToken);
 
   if (!authToken) {
-    const token = await generateToken(
-      "7eedf0ddd26280db27b9a3aeabd67b39.Sa8px3qwwa3GDYWd",
-      3600,
-    );
+    const token = await generateToken(process.env.GLM_API_KEY, 3600);
     req.headers.set("Authorization", token);
   }
 
