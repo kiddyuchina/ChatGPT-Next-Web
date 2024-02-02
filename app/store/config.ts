@@ -48,7 +48,7 @@ export const DEFAULT_CONFIG = {
   modelConfig: {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
-    top_p: 1,
+    top_p: 0.5,
     max_tokens: 4000,
     presence_penalty: 0,
     frequency_penalty: 0,
@@ -141,7 +141,7 @@ export const useAppConfig = createPersistStore(
         state.modelConfig.historyMessageCount = 4;
         state.modelConfig.compressMessageLengthThreshold = 1000;
         state.modelConfig.frequency_penalty = 0;
-        state.modelConfig.top_p = 1;
+        state.modelConfig.top_p = 0.4;
         state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
         state.dontShowMaskSplashScreen = false;
         state.hideBuiltinMasks = false;
