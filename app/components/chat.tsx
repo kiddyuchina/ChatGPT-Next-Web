@@ -16,7 +16,7 @@ import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import PromptIcon from "../icons/prompt.svg";
-import MaskIcon from "../icons/mask.svg";
+import RoleIcon from "../icons/role.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
@@ -502,7 +502,7 @@ export function ChatActions(props: {
           navigate(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
-        icon={<MaskIcon />}
+        icon={<RoleIcon />}
       />
 
       <ChatAction

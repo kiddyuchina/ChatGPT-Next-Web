@@ -78,7 +78,6 @@ export function SignIn() {
                 <Input
                   placeholder="手机号"
                   type="tel"
-                  size="large"
                   maxLength={11}
                   value={username}
                   onChange={(e) => {
@@ -92,7 +91,6 @@ export function SignIn() {
               <Cell>
                 <Input
                   placeholder="请输入密码"
-                  size="large"
                   value={password}
                   onChange={(e) => setPassword(e)}
                   prefix=""
