@@ -14,7 +14,7 @@ import { getCSSVar, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { ModelProvider, Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
-
+import { Link, useNavigate } from "react-router-dom";
 import { getISOLang, getLang } from "../locales";
 
 import {
@@ -29,6 +29,8 @@ import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
 import { useAccessStore } from "../store";
+import { useUser } from "../store/user";
+import axios from "axios";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -52,6 +54,14 @@ const NewChat = dynamic(async () => (await import("./new-chat")).NewChat, {
 });
 
 const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
+  loading: () => <Loading noLogo />,
+});
+
+const Signin = dynamic(async () => (await import("./signin")).SignIn, {
+  loading: () => <Loading noLogo />,
+});
+
+const Regist = dynamic(async () => (await import("./regist")).RegisterPage, {
   loading: () => <Loading noLogo />,
 });
 
@@ -123,6 +133,8 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
@@ -133,8 +145,23 @@ function Screen() {
 
   useEffect(() => {
     loadAsyncGoogleFont();
-  }, []);
 
+    if (token && !useUser.getState().id) {
+      axios
+        .post("http://ai.aliensoft.com.cn/api/token", { token })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
+  console.log(
+    "location.pathname",
+    location.pathname,
+    location.pathname.indexOf("regist"),
+  );
   return (
     <div
       className={
@@ -144,9 +171,10 @@ function Screen() {
         }`
       }
     >
-      {isAuth ? (
+      {!token ? (
         <>
-          <AuthPage />
+          {location.pathname.indexOf("regist") === -1 && <Signin />}
+          {location.pathname.indexOf("regist") > -1 && <Regist />}
         </>
       ) : (
         <>
