@@ -119,7 +119,7 @@ export class ChatGLMApi implements LLMApi {
         headers: {
           Accept: "application/json",
           Authorization: await generateToken(
-            "7eedf0ddd26280db27b9a3aeabd67b39.Sa8px3qwwa3GDYWd",
+            "4f31c0497881b1826bca0b6ba28d9501.IyCkXjs1yLnug4Ob",
             3600,
           ),
           "Content-Type": "application/json",
