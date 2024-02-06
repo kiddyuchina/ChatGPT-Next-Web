@@ -37,7 +37,7 @@ export function SignIn() {
       });
     }
     axios
-      .post("http://ai.aliensoft.com.cn/api/signin", { username, password })
+      .post("https://ai.aliensoft.com.cn/api/signin", { username, password })
       .then((res) => {
         if (res.data.success) {
           let token = res.data.data.token;

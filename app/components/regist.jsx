@@ -39,7 +39,7 @@ export function RegisterPage() {
     let formData = { username, password, repass };
 
     axios
-      .post("http://ai.aliensoft.com.cn/api/register", formData)
+      .post("https://ai.aliensoft.com.cn/api/register", formData)
       .then((res) => {
         if (res.data.success) {
           let token = res.data.data.token;

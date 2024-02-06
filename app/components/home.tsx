@@ -148,7 +148,7 @@ function Screen() {
 
     if (token && !useUser.getState().id) {
       axios
-        .post("http://ai.aliensoft.com.cn/api/token", { token })
+        .post("https://ai.aliensoft.com.cn/api/token", { token })
         .then((res) => {
           console.log(res);
         })
