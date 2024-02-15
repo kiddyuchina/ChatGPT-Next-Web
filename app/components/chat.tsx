@@ -89,6 +89,7 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
+import { uploadFile } from "../utils/upload";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -414,7 +415,11 @@ export function ChatActions(props: {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
+  const [file, setFile] = useState<any>(null);
 
+  const handleFileChange = (e: any) => {
+    setFile(e.target.files[0]);
+  };
   // switch themes
   const theme = config.theme;
   function nextTheme() {
@@ -467,6 +472,15 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
+      <input type="file" onChange={handleFileChange} />
+      <button
+        onClick={() => {
+          uploadFile(file);
+        }}
+      >
+        {" "}
+        Upload{" "}
+      </button>
       {props.hitBottom && (
         <ChatAction
           onClick={props.showPromptModal}
