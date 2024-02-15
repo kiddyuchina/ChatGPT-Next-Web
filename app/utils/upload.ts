@@ -5,39 +5,38 @@ export async function uploadFile(file: any) {
 
   // 阿里云OSS配置
   const client = new OSS({
-    region: "oss-cn-o493m2c4z090", // 你的OSS区域
+    region: "oss-ap-southeast-1", // 你的OSS区域
     accessKeyId: "LTAI5tAaKKjp1vPaQunjKo8g", // 替换为你的AccessKeyId
     accessKeySecret: "nP9eNZ8uykazcgij5wwl6MTDm9tuDU", // 替换为你的AccessKeySecret
     bucket: "hypergpt", // 你的Bucket名称
   });
 
+  // 确保文件名没有斜杠开头
+  let fileName = `images/${Date.now()}.${file.name.split(".").pop()}`;
+
   try {
-    // 使用STS凭证或RAM用户凭证进行客户端签名
-    const { url } = await client.signatureUrl("uploads/${file.name}", {
-      expires: 3600, // 签名有效时间，单位为秒
-      method: "PUT", // 指定上传的方法
-    });
+    // 如果file是一个File对象，需要转换为Buffer
+    const fileBuffer = await readFileAsBuffer(file);
 
-    // 使用fetch直接上传文件到OSS
-    const formData = new FormData();
-    formData.append("key", `uploads/${file.name}`);
-    formData.append("policy", client.policy);
-    formData.append("OSSAccessKeyId", client.credentials.accessKeyId);
-    formData.append("signature", client.signature);
-    formData.append("file", file);
+    // 上传文件到OSS
+    const uploadResult = await client.put(fileName, fileBuffer);
+    console.log("上传成功:", uploadResult);
 
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      console.log("File uploaded successfully");
-      // 获取文件的URL，通常是从response中解析出来，或者直接使用签名URL
-    } else {
-      console.error("Error uploading file");
-    }
+    // 注意：通常不需要立即获取上传的文件来验证上传成功
+    // const getResult = await client.get(fileName);
+    // console.log('获取文件成功:', getResult);
   } catch (error) {
-    console.error("Error during upload:", error);
+    console.error("发生错误:", error);
+    // 在此处添加错误处理逻辑。
   }
+}
+
+// 将File对象转换为Buffer
+function readFileAsBuffer(file: any) {
+  return new Promise((resolve, reject) => {
+    const reader: any = new FileReader();
+    reader.onload = () => resolve(new Buffer(reader.result));
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
 }
