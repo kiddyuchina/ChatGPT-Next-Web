@@ -201,7 +201,9 @@ export function useLoadData() {
   var api: ClientApi;
   if (config.modelConfig.model === "gemini-pro") {
     api = new ClientApi(ModelProvider.GeminiPro);
-  } else if (["glm-4", "chatglm_pro"].includes(config.modelConfig.model)) {
+  } else if (
+    ["glm-4", "glm-4v", "chatglm_pro"].includes(config.modelConfig.model)
+  ) {
     api = new ClientApi(ModelProvider.GLM);
   } else {
     api = new ClientApi(ModelProvider.GLM);

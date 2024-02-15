@@ -153,6 +153,12 @@ function _MarkDownContent(props: { content: string }) {
 
 export const MarkdownContent = React.memo(_MarkDownContent);
 
+interface ImageSize {
+  width: number;
+  height: number;
+  url: string;
+}
+
 export function Markdown(
   props: {
     content: string;
@@ -178,7 +184,20 @@ export function Markdown(
       {props.loading ? (
         <LoadingIcon />
       ) : (
-        <MarkdownContent content={props.content} />
+        <>
+          {props.content.indexOf(
+            "https://hypergpt.oss-ap-southeast-1.aliyuncs.com/",
+          ) === 0 ? (
+            <div style={{ maxWidth: "240px", height: "auto" }}>
+              <img
+                src={props.content}
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          ) : (
+            <MarkdownContent content={props.content} />
+          )}
+        </>
       )}
     </div>
   );

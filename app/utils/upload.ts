@@ -1,4 +1,5 @@
 import OSS from "ali-oss";
+import { useCurrentFile } from "../store/upload";
 
 export async function uploadFile(file: any) {
   if (!file) return;
@@ -12,19 +13,20 @@ export async function uploadFile(file: any) {
   });
 
   // 确保文件名没有斜杠开头
+  let fileId = `${Date.now()}`;
   let fileName = `images/${Date.now()}.${file.name.split(".").pop()}`;
+  let url = `https://hypergpt.oss-ap-southeast-1.aliyuncs.com/${fileName}`;
 
   try {
     // 如果file是一个File对象，需要转换为Buffer
     const fileBuffer = await readFileAsBuffer(file);
 
     // 上传文件到OSS
-    const uploadResult = await client.put(fileName, fileBuffer);
-    console.log("上传成功:", uploadResult);
+    await client.put(fileName, fileBuffer);
+    //console.log("上传成功:", uploadResult);
 
-    // 注意：通常不需要立即获取上传的文件来验证上传成功
-    // const getResult = await client.get(fileName);
-    // console.log('获取文件成功:', getResult);
+    // 更新useCurrentFile store
+    useCurrentFile.setState({ id: fileId, url: url });
   } catch (error) {
     console.error("发生错误:", error);
     // 在此处添加错误处理逻辑。

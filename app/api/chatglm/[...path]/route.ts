@@ -133,8 +133,6 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("11111111111111111111111", params);
-
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }

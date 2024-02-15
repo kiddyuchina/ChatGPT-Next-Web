@@ -154,15 +154,17 @@ export function getHeaders() {
     Accept: "application/json",
   };
   const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
-  const isChatGLM = ["glm-4", "chatglm_pro"].includes(modelConfig.model);
+  const isChatGLM = ["glm-4", "glm-4v", "chatglm_pro"].includes(
+    modelConfig.model,
+  );
   const isGoogle = modelConfig.model === "gemini-pro";
   const isAzure = accessStore.provider === ServiceProvider.Azure;
   const authHeader = isAzure ? "api-key" : "Authorization";
   const apiKey = isGoogle
     ? accessStore.googleApiKey
     : isAzure
-    ? accessStore.azureApiKey
-    : accessStore.openaiApiKey;
+      ? accessStore.azureApiKey
+      : accessStore.openaiApiKey;
 
   const makeBearer = (s: string) => `${isAzure ? "" : "Bearer "}${s.trim()}`;
   const validString = (x: string) => x && x.length > 0;

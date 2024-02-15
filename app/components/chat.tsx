@@ -90,6 +90,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { uploadFile } from "../utils/upload";
+import { useCurrentFile } from "../store/upload";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -472,15 +473,24 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
-      <input type="file" onChange={handleFileChange} />
-      <button
-        onClick={() => {
-          uploadFile(file);
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "-10px",
+          marginRight: "6px",
         }}
       >
-        {" "}
-        Upload{" "}
-      </button>
+        <input id="myfile" type="file" onChange={handleFileChange} />
+        <button
+          onClick={() => {
+            uploadFile(file);
+          }}
+        >
+          上传
+        </button>
+      </div>
       {props.hitBottom && (
         <ChatAction
           onClick={props.showPromptModal}
@@ -642,7 +652,7 @@ function _Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-
+  const { url } = useCurrentFile();
   // prompt hints
   const promptStore = usePromptStore();
   const [promptHints, setPromptHints] = useState<RenderPompt[]>([]);
@@ -716,6 +726,8 @@ function _Chat() {
       setUserInput("");
       setPromptHints([]);
       matchCommand.invoke();
+      useCurrentFile.setState({ url: "" });
+
       return;
     }
     setIsLoading(true);
@@ -777,6 +789,12 @@ function _Chat() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!url) return;
+    setUserInput(url);
+    doSubmit(url);
+  }, [url]);
 
   // check if should send message
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
