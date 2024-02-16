@@ -18,7 +18,6 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
-import { getMessagesContext } from "../utils";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -289,6 +288,7 @@ export const useChatStore = createPersistStore(
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
+        // const sendMessages = get().getMessagesContext(recentMessages.concat(userMessage));
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -479,7 +479,6 @@ export const useChatStore = createPersistStore(
         updater(messages?.at(messageIndex));
         set(() => ({ sessions }));
       },
-
       resetSession() {
         get().updateCurrentSession((session) => {
           session.messages = [];

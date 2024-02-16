@@ -78,8 +78,47 @@ export class ChatGLMApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
+  getMessagesContext(messages: any[]) {
+    const popMessage = messages[messages.length - 1];
+    if (
+      popMessage &&
+      popMessage.content.indexOf(
+        "https://hypergpt.oss-ap-southeast-1.aliyuncs.com/",
+      ) === 0
+    ) {
+      return [
+        {
+          role: popMessage.role,
+          content: [
+            {
+              type: "text",
+              text: "请帮我解答这个图片中文字的问题",
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: popMessage.content,
+              },
+            },
+          ],
+        },
+      ];
+    } else {
+      // Ensure we return an array of messages
+      return messages.map((v) => ({
+        role: v.role,
+        content:
+          v.content.indexOf(
+            "https://hypergpt.oss-ap-southeast-1.aliyuncs.com/",
+          ) === 0
+            ? "上传的图片"
+            : v.content,
+      }));
+    }
+  }
+
   async chat(options: ChatOptions) {
-    let messages = options.messages;
+    let messages = this.getMessagesContext(options.messages);
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -90,7 +129,7 @@ export class ChatGLMApi implements LLMApi {
     };
 
     const requestPayload = {
-      messages,
+      messages: this.getMessagesContext(messages),
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
