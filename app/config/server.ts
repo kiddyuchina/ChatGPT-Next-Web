@@ -55,7 +55,8 @@ export const getServerSideConfig = () => {
   }
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
-  let customModels = process.env.CUSTOM_MODELS ?? "-all,+glm-4v";
+  let customModels =
+    process.env.CUSTOM_MODELS ?? "-all,+glm-4,+glm-4v,+chatglm_pro";
 
   if (disableGPT4) {
     if (customModels) customModels += ",";

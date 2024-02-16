@@ -18,6 +18,7 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { getMessagesContext } from "../utils";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -305,12 +306,14 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model === "gemini-pro") {
           api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (["glm-4v", "chatglm_pro"].includes(modelConfig.model)) {
+        } else if (
+          ["glm-4", "glm-4v", "chatglm_pro"].includes(modelConfig.model)
+        ) {
           api = new ClientApi(ModelProvider.GLM);
         } else {
           api = new ClientApi(ModelProvider.GPT);
         }
-
+        console.log("22222222222", sendMessages);
         // make request
         api.llm.chat({
           messages: sendMessages,
@@ -461,7 +464,6 @@ export const useChatStore = createPersistStore(
           ...contextPrompts,
           ...reversedRecentMessages.reverse(),
         ];
-
         return recentMessages;
       },
 
@@ -470,6 +472,7 @@ export const useChatStore = createPersistStore(
         messageIndex: number,
         updater: (message?: ChatMessage) => void,
       ) {
+        console.log("updateMessage ", sessionIndex, messageIndex, updater);
         const sessions = get().sessions;
         const session = sessions.at(sessionIndex);
         const messages = session?.messages;
@@ -492,7 +495,9 @@ export const useChatStore = createPersistStore(
         var api: ClientApi;
         if (modelConfig.model === "gemini-pro") {
           api = new ClientApi(ModelProvider.GeminiPro);
-        } else if (["glm-4v", "chatglm_pro"].includes(modelConfig.model)) {
+        } else if (
+          ["glm-4", "glm-4v", "chatglm_pro"].includes(modelConfig.model)
+        ) {
           api = new ClientApi(ModelProvider.GLM);
         } else {
           api = new ClientApi(ModelProvider.GPT);
@@ -514,6 +519,7 @@ export const useChatStore = createPersistStore(
               content: Locale.Store.Prompt.Topic,
             }),
           );
+          console.log("1111111111111111");
           api.llm.chat({
             messages: topicMessages,
             config: {

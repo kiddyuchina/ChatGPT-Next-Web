@@ -416,11 +416,8 @@ export function ChatActions(props: {
   const config = useAppConfig();
   const navigate = useNavigate();
   const chatStore = useChatStore();
-  const [file, setFile] = useState<any>(null);
+  const modelConfig = useChatStore.getState().currentSession().mask.modelConfig;
 
-  const handleFileChange = (e: any) => {
-    setFile(e.target.files[0]);
-  };
   // switch themes
   const theme = config.theme;
   function nextTheme() {
@@ -473,24 +470,34 @@ export function ChatActions(props: {
           icon={<BottomIcon />}
         />
       )}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "-10px",
-          marginRight: "6px",
-        }}
-      >
-        <input id="myfile" type="file" onChange={handleFileChange} />
-        <button
-          onClick={() => {
-            uploadFile(file);
+      {modelConfig.model === "glm-4v" && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "-10px",
+            marginRight: "6px",
           }}
         >
-          上传
-        </button>
-      </div>
+          <input id="myfile" type="file" />
+          <button
+            onClick={() => {
+              const inputElement = document.getElementById(
+                "myfile",
+              ) as HTMLInputElement;
+
+              if (inputElement.files && inputElement.files.length > 0) {
+                const file = inputElement.files[0];
+
+                uploadFile(file);
+              }
+            }}
+          >
+            上传
+          </button>
+        </div>
+      )}
       {props.hitBottom && (
         <ChatAction
           onClick={props.showPromptModal}
@@ -726,12 +733,20 @@ function _Chat() {
       setUserInput("");
       setPromptHints([]);
       matchCommand.invoke();
-      useCurrentFile.setState({ url: "" });
 
       return;
     }
-    setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+
+    chatStore.onUserInput(userInput).then(() => {
+      setIsLoading(false);
+      useCurrentFile.setState({ url: "" });
+      const inputElement = document.getElementById(
+        "myfile",
+      ) as HTMLInputElement;
+      if (inputElement) {
+        inputElement.value = "";
+      }
+    });
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);

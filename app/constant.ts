@@ -259,15 +259,15 @@ export const DEFAULT_MODELS = [
       providerType: "google",
     },
   },
-  // {
-  //   name: "glm-4",
-  //   available: true,
-  //   provider: {
-  //     id: "chatglm",
-  //     providerName: "ChatGLM",
-  //     providerType: "chatglm",
-  //   },
-  // },
+  {
+    name: "glm-4",
+    available: true,
+    provider: {
+      id: "chatglm",
+      providerName: "ChatGLM",
+      providerType: "chatglm",
+    },
+  },
   {
     name: "glm-4v",
     available: true,

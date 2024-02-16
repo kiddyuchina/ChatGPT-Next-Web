@@ -78,49 +78,9 @@ export class ChatGLMApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
-  getMessagesContext(messages: any) {
-    const popMessages = messages.pop();
-    if (
-      popMessages.content.indexOf(
-        "https://hypergpt.oss-ap-southeast-1.aliyuncs.com/",
-      ) === 0
-    ) {
-      return [
-        {
-          role: popMessages.role,
-          content: [
-            {
-              type: "text",
-              text: "请帮我解答这个图片中文字的问题",
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: popMessages.content,
-              },
-            },
-          ],
-        },
-      ];
-    } else {
-      return messages.map((v: any) => {
-        return {
-          role: v.role,
-          content:
-            v.content.indexOf(
-              "https://hypergpt.oss-ap-southeast-1.aliyuncs.com/",
-            ) === 0
-              ? "上传的图片"
-              : v.content,
-        };
-      });
-    }
-  }
-
   async chat(options: ChatOptions) {
-    const messages = this.getMessagesContext(options.messages);
+    let messages = options.messages;
 
-    console.log("messages", messages);
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -149,6 +109,7 @@ export class ChatGLMApi implements LLMApi {
 
     try {
       const chatPath = this.path(ChatGLM.ChatPath);
+      console.log("body", requestPayload);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -300,15 +261,15 @@ export class ChatGLMApi implements LLMApi {
 
   async models(): Promise<LLMModel[]> {
     return [
-      // {
-      //   name: "glm-4",
-      //   available: true,
-      //   provider: {
-      //     id: "chatglm",
-      //     providerName: "ChatGLM",
-      //     providerType: "chatglm",
-      //   },
-      // },
+      {
+        name: "glm-4",
+        available: true,
+        provider: {
+          id: "chatglm",
+          providerName: "ChatGLM",
+          providerType: "chatglm",
+        },
+      },
       {
         name: "glm-4v",
         available: true,
@@ -318,15 +279,15 @@ export class ChatGLMApi implements LLMApi {
           providerType: "chatglm",
         },
       },
-      // {
-      //   name: "chatglm_pro",
-      //   available: true,
-      //   provider: {
-      //     id: "chatglm",
-      //     providerName: "ChatGLM",
-      //     providerType: "chatglm",
-      //   },
-      // },
+      {
+        name: "chatglm_pro",
+        available: true,
+        provider: {
+          id: "chatglm",
+          providerName: "ChatGLM",
+          providerType: "chatglm",
+        },
+      },
     ];
   }
 }
