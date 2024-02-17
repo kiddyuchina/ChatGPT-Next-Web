@@ -30,6 +30,16 @@ declare global {
       // google only
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
+
+      //glm
+      GLM_APP_KEY?: string;
+
+      //oss
+      OSS_APP_ID?: string;
+      OSS_APP_SECRET?: string;
+      OSS_APP_REGION?: string;
+      OSS_APP_BUCKET?: string;
+      OSS_APP_ENDPOINT?: string;
     }
   }
 }
@@ -102,5 +112,12 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+
+    glmAppKey: process.env.GLM_APP_KEY,
+
+    ossAppId: process.env.OSS_APP_ID,
+    ossAppSecret: process.env.OSS_APP_SECRET,
+    ossAppRegion: process.env.OSS_APP_REGION,
+    ossAppBucket: process.env.OSS_APP_BUCKET,
   };
 };

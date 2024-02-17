@@ -18,6 +18,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { SignJWT } from "jose";
+import { getServerSideConfig } from "@/app/config/server";
 
 export interface ChatGLMListModelResponse {
   object: string;
@@ -145,10 +146,10 @@ export class ChatGLMApi implements LLMApi {
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
-
+    const serverConfig = getServerSideConfig();
     try {
       const chatPath = this.path(ChatGLM.ChatPath);
-      console.log("body", requestPayload);
+      console.log("body", requestPayload, serverConfig, process.env);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -156,7 +157,7 @@ export class ChatGLMApi implements LLMApi {
         headers: {
           Accept: "application/json",
           Authorization: await generateToken(
-            "4f31c0497881b1826bca0b6ba28d9501.IyCkXjs1yLnug4Ob",
+            getServerSideConfig().glmAppKey ?? "",
             3600,
           ),
           "Content-Type": "application/json",

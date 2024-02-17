@@ -62,8 +62,8 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       modelProvider === ModelProvider.GeminiPro
         ? serverConfig.googleApiKey
         : serverConfig.isAzure
-        ? serverConfig.azureApiKey
-        : serverConfig.apiKey;
+          ? serverConfig.azureApiKey
+          : serverConfig.apiKey;
     if (systemApiKey) {
       console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${systemApiKey}`);
@@ -111,10 +111,8 @@ export async function chatglmAuth(
   console.log("[Auth] got chatglmAuth token: ", authToken);
 
   if (!authToken) {
-    const token = await generateToken(
-      "4f31c0497881b1826bca0b6ba28d9501.IyCkXjs1yLnug4Ob",
-      3600,
-    );
+    console.log("[Auth] generate chatglmAuth token", process.env.GLM_APP_KEY);
+    const token = await generateToken(process.env.GLM_APP_KEY ?? "", 3600);
     req.headers.set("Authorization", token);
   }
 
